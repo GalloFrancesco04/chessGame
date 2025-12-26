@@ -55,7 +55,7 @@ Board::Board()
     }
 }
 
-chess::Square Board::getPiece(int row, int column) const
+chess::Square Board::getSquare(int row, int column) const
 {
     return board[row][column];
 }

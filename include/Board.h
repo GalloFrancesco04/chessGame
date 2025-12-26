@@ -10,6 +10,6 @@ private:
 
 public:
     Board();
-    chess::Square getPiece(int row, int column) const;
+    chess::Square getSquare(int row, int column) const;
     void setSquare(int row, int column, const chess::Square &square);
 };
