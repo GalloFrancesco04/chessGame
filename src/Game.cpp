@@ -66,6 +66,21 @@ void Game::handleBoardClick(int row, int col)
               << " piece=" << (int)test.piece
               << " color=" << (int)test.color
               << " isEmpty=" << (test.piece == chess::Piece::EMPTY) << std::endl;
+
+    if (hasSelection == true && test.piece == chess::Piece::EMPTY)
+    {
+        board.setSquare(row, col, selectedSquare);
+        board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
+        hasSelection = false;
+    }
+
+    if (test.piece != chess::Piece::EMPTY)
+    {
+        hasSelection = true;
+        selectedColumn = col;
+        selectedRow = row;
+        selectedSquare = test;
+    }
 }
 
 void Game::handleEvents()

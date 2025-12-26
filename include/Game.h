@@ -27,7 +27,10 @@ private:
     static constexpr int SQUARE_SIZE = 80;
     static constexpr int PIECE_SIZE = 60; // Spritesheet is 360x120 (6 cols x 2 rows of 60x60)
     Board board;
-    bool selected = false;
+    bool hasSelection = false;
+    int selectedRow;
+    int selectedColumn;
+    chess::Square selectedSquare;
 };
 
 #endif // GAME_H
