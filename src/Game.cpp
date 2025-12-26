@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <vector>
 #include <string>
+#include <map>
 
 Game::Game() : window(sf::VideoMode(BOARD_SIZE * SQUARE_SIZE, BOARD_SIZE * SQUARE_SIZE), "Chess Game")
 {
@@ -8,7 +9,12 @@ Game::Game() : window(sf::VideoMode(BOARD_SIZE * SQUARE_SIZE, BOARD_SIZE * SQUAR
 
     // Try loading a commonly available font; fall back to assets if provided
     const std::vector<std::string> candidates = {
-        // Project-local fonts
+        // Project-local fonts (actual files)
+        "assets/fonts/NotoSans-VariableFont_wdth,wght.ttf",
+        "assets/fonts/NotoSans-Italic-VariableFont_wdth,wght.ttf",
+        "../assets/fonts/NotoSans-VariableFont_wdth,wght.ttf",
+        "../assets/fonts/NotoSans-Italic-VariableFont_wdth,wght.ttf",
+        // Alternative project-local names
         "assets/fonts/DejaVuSans.ttf",
         "assets/fonts/NotoSans-Regular.ttf",
         "../assets/fonts/DejaVuSans.ttf",
@@ -23,6 +29,20 @@ Game::Game() : window(sf::VideoMode(BOARD_SIZE * SQUARE_SIZE, BOARD_SIZE * SQUAR
         if (font.loadFromFile(p))
         {
             hasFont = true;
+            break;
+        }
+    }
+
+    // Load pieces spritesheet
+    const std::vector<std::string> spritesheet_candidates = {
+        "assets/icons/pieces.png",
+        "../assets/icons/pieces.png",
+        "../../assets/icons/pieces.png"};
+    for (const auto &p : spritesheet_candidates)
+    {
+        if (piecesTexture.loadFromFile(p))
+        {
+            hasTexture = true;
             break;
         }
     }
@@ -65,14 +85,24 @@ void Game::render()
 
 void Game::drawBoard()
 {
+    // Map piece types to spritesheet column indices
+    const std::map<chess::Piece, int> pieceToColumn = {
+        {chess::Piece::QUEEN, 0},
+        {chess::Piece::KING, 1},
+        {chess::Piece::ROOK, 2},
+        {chess::Piece::KNIGHT, 3},
+        {chess::Piece::BISHOP, 4},
+        {chess::Piece::PAWN, 5}};
+
     for (int row = 0; row < BOARD_SIZE; row++)
     {
         for (int col = 0; col < BOARD_SIZE; col++)
         {
+            // Draw square background
             sf::RectangleShape square(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
             square.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
 
-            // Alternating colors: white and black
+            // Alternating colors: light and dark
             if ((row + col) % 2 == 0)
             {
                 square.setFillColor(sf::Color(217, 193, 159));
@@ -83,6 +113,32 @@ void Game::drawBoard()
             }
 
             window.draw(square);
+
+            // Draw piece if present
+            chess::Square boardSquare = board.getPiece(row, col);
+            if (boardSquare.piece != chess::Piece::EMPTY && hasTexture)
+            {
+                // Determine spritesheet row: 0 = BLACK, 1 = WHITE
+                int sheetRow = (boardSquare.color == chess::Color::BLACK) ? 0 : 1;
+
+                // Determine spritesheet column from piece type
+                int sheetCol = 0;
+                auto it = pieceToColumn.find(boardSquare.piece);
+                if (it != pieceToColumn.end())
+                {
+                    sheetCol = it->second;
+                }
+
+                // Create sprite from spritesheet (60x60 per piece)
+                sf::IntRect textureRect(sheetCol * PIECE_SIZE, sheetRow * PIECE_SIZE, PIECE_SIZE, PIECE_SIZE);
+                sf::Sprite sprite(piecesTexture, textureRect);
+
+                // Center and scale the sprite to fit the square
+                sprite.setScale(static_cast<float>(SQUARE_SIZE) / PIECE_SIZE, static_cast<float>(SQUARE_SIZE) / PIECE_SIZE);
+                sprite.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
+
+                window.draw(sprite);
+            }
         }
     }
 }
