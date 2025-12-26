@@ -25,3 +25,12 @@ add_executable(chess ${SOURCES})
 
 # Link SFML
 target_link_libraries(chess sfml-graphics sfml-window sfml-system)
+
+# Copy project assets (fonts, etc.) into the build directory
+set(ASSETS_DIR ${CMAKE_SOURCE_DIR}/assets)
+if(EXISTS ${ASSETS_DIR})
+    message(STATUS "Copying assets to build directory")
+    file(COPY ${ASSETS_DIR} DESTINATION ${CMAKE_BINARY_DIR})
+else()
+    message(STATUS "No assets directory found at ${ASSETS_DIR}")
+endif()
