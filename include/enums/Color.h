@@ -1,7 +1,11 @@
 #pragma once
+#include <cstdint>
 
-enum class Color
+namespace chess
 {
-    black,
-    white
-};
+    enum class Color : uint8_t // this way it occupies 1 byte instead of an int
+    {
+        black,
+        white
+    };
+}
