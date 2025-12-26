@@ -16,6 +16,7 @@ private:
     void render();
     void drawBoard();
     void drawCoordinates();
+    void handleBoardClick(int row, int col);
 
     sf::RenderWindow window;
     sf::Font font;
@@ -26,6 +27,7 @@ private:
     static constexpr int SQUARE_SIZE = 80;
     static constexpr int PIECE_SIZE = 60; // Spritesheet is 360x120 (6 cols x 2 rows of 60x60)
     Board board;
+    bool selected = false;
 };
 
 #endif // GAME_H

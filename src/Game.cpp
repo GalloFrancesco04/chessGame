@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <iostream>
 
 Game::Game() : window(sf::VideoMode(BOARD_SIZE * SQUARE_SIZE, BOARD_SIZE * SQUARE_SIZE), "Chess Game")
 {
@@ -58,6 +59,15 @@ void Game::run()
     }
 }
 
+void Game::handleBoardClick(int row, int col)
+{
+    chess::Square test = board.getSquare(row, col);
+    std::cout << "Clicked: row=" << row << " col=" << col
+              << " piece=" << (int)test.piece
+              << " color=" << (int)test.color
+              << " isEmpty=" << (test.piece == chess::Piece::EMPTY) << std::endl;
+}
+
 void Game::handleEvents()
 {
     sf::Event event;
@@ -66,6 +76,27 @@ void Game::handleEvents()
         if (event.type == sf::Event::Closed)
         {
             window.close();
+        }
+
+        if (event.type == sf::Event::MouseButtonPressed)
+        {
+            // Get mouse position relative to the window (more reliable than event coordinates)
+            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+            // Map pixel coordinates to world coordinates (handles window scaling)
+            sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+
+            int col = static_cast<int>(worldPos.x) / SQUARE_SIZE;
+            int row = static_cast<int>(worldPos.y) / SQUARE_SIZE;
+
+            std::cout << "Mouse: pixel(" << mousePos.x << "," << mousePos.y << ") "
+                      << "world(" << worldPos.x << "," << worldPos.y << ") "
+                      << "grid(" << row << "," << col << ")" << std::endl;
+
+            if (row >= 0 && row < 8 && col >= 0 && col < 8)
+            {
+                handleBoardClick(row, col);
+            }
         }
     }
 }
@@ -115,7 +146,7 @@ void Game::drawBoard()
             window.draw(square);
 
             // Draw piece if present
-            chess::Square boardSquare = board.getPiece(row, col);
+            chess::Square boardSquare = board.getSquare(row, col);
             if (boardSquare.piece != chess::Piece::EMPTY && hasTexture)
             {
                 // Determine spritesheet row: 0 = BLACK, 1 = WHITE
