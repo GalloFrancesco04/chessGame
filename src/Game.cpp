@@ -80,7 +80,7 @@ void Game::handleBoardClick(int row, int col)
     if (hasSelection)
     {
         // Click on the same square: deselect
-        if (row == selectedRow && col == selectedColumn)
+        if (row == selectedPos.row && col == selectedPos.col)
         {
             hasSelection = false;
             return;
@@ -89,21 +89,19 @@ void Game::handleBoardClick(int row, int col)
         // Click on your own piece: change selection to that piece
         if (initialSquare.piece != chess::Piece::EMPTY && initialSquare.color == turn)
         {
-            selectedRow = row;
-            selectedColumn = col;
+            selectedPos.row = row;
+            selectedPos.col = col;
             selectedSquare = initialSquare;
             return;
         }
 
         // Move to empty square or opponent piece
-        lastMoveFromRow = selectedRow;
-        lastMoveFromCol = selectedColumn;
-        lastMoveToRow = row;
-        lastMoveToCol = col;
+        lastMoveFrom = selectedPos;
+        lastMoveTo = {row, col};
         hasLastMove = true;
 
         board.setSquare(row, col, selectedSquare);
-        board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
+        board.setSquare(selectedPos.row, selectedPos.col, chess::emptySquare);
         hasSelection = false;
         turn = (turn == chess::Color::WHITE) ? chess::Color::BLACK : chess::Color::WHITE;
         return;
@@ -113,8 +111,8 @@ void Game::handleBoardClick(int row, int col)
     if (initialSquare.piece != chess::Piece::EMPTY && initialSquare.color == turn)
     {
         hasSelection = true;
-        selectedColumn = col;
-        selectedRow = row;
+        selectedPos.col = col;
+        selectedPos.row = row;
         selectedSquare = initialSquare;
     }
 }
@@ -190,8 +188,8 @@ void Game::drawBoard()
             // Highlight last move (from and to squares)
             if (hasLastMove)
             {
-                if ((row == lastMoveFromRow && col == lastMoveFromCol) ||
-                    (row == lastMoveToRow && col == lastMoveToCol))
+                if ((row == lastMoveFrom.row && col == lastMoveFrom.col) ||
+                    (row == lastMoveTo.row && col == lastMoveTo.col))
                 {
                     sf::RectangleShape lastMoveHighlight(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
                     lastMoveHighlight.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
@@ -201,7 +199,7 @@ void Game::drawBoard()
             }
 
             // Highlight selected square (if any)
-            if (hasSelection && row == selectedRow && col == selectedColumn)
+            if (hasSelection && row == selectedPos.row && col == selectedPos.col)
             {
                 sf::RectangleShape highlight(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
                 highlight.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
