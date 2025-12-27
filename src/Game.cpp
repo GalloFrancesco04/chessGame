@@ -69,13 +69,23 @@ void Game::handleBoardClick(int row, int col)
 
     if (hasSelection && (row != selectedRow || col != selectedColumn))
     {
-        board.setSquare(row, col, selectedSquare);
-        board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
+        if (selectedSquare.piece != chess::Piece::EMPTY && test.color != turn)
+        {
+            board.setSquare(row, col, selectedSquare);
+            board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
+            hasSelection = false;
+            if (turn == chess::Color::WHITE)
+            {
+                turn = chess::Color::BLACK;
+            }
+            else
+                turn = chess::Color::WHITE;
+        }
         hasSelection = false;
     }
     else
 
-        if (test.piece != chess::Piece::EMPTY)
+        if (test.piece != chess::Piece::EMPTY && test.color == turn)
     {
         hasSelection = true;
         selectedColumn = col;

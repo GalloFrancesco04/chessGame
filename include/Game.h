@@ -31,6 +31,7 @@ private:
     int selectedRow;
     int selectedColumn;
     chess::Square selectedSquare;
+    chess::Color turn = chess::Color::WHITE;
 };
 
 #endif // GAME_H
