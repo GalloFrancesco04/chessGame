@@ -22,6 +22,7 @@ private:
     static const std::map<chess::Piece, int> pieceToColumn;
     const sf::Color LIGHT_SQUARE{217, 193, 159};
     const sf::Color DARK_SQUARE{121, 60, 42};
+    const sf::Color LAST_MOVE_HIGHLIGHT{170, 200, 60};
     sf::Font font;
     bool hasFont{false};
     sf::Texture piecesTexture;
@@ -36,6 +37,11 @@ private:
     int selectedColumn;
     chess::Square selectedSquare;
     chess::Color turn = chess::Color::WHITE;
+    bool hasLastMove = false;
+    int lastMoveFromRow;
+    int lastMoveFromCol;
+    int lastMoveToRow;
+    int lastMoveToCol;
 };
 
 #endif // GAME_H

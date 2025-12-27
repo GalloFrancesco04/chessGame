@@ -96,6 +96,12 @@ void Game::handleBoardClick(int row, int col)
         }
 
         // Move to empty square or opponent piece
+        lastMoveFromRow = selectedRow;
+        lastMoveFromCol = selectedColumn;
+        lastMoveToRow = row;
+        lastMoveToCol = col;
+        hasLastMove = true;
+
         board.setSquare(row, col, selectedSquare);
         board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
         hasSelection = false;
@@ -180,6 +186,19 @@ void Game::drawBoard()
             }
 
             window.draw(square);
+
+            // Highlight last move (from and to squares)
+            if (hasLastMove)
+            {
+                if ((row == lastMoveFromRow && col == lastMoveFromCol) ||
+                    (row == lastMoveToRow && col == lastMoveToCol))
+                {
+                    sf::RectangleShape lastMoveHighlight(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
+                    lastMoveHighlight.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
+                    lastMoveHighlight.setFillColor(sf::Color(LAST_MOVE_HIGHLIGHT.r, LAST_MOVE_HIGHLIGHT.g, LAST_MOVE_HIGHLIGHT.b, SELECTION_HIGHLIGHT_ALPHA));
+                    window.draw(lastMoveHighlight);
+                }
+            }
 
             // Highlight selected square (if any)
             if (hasSelection && row == selectedRow && col == selectedColumn)
