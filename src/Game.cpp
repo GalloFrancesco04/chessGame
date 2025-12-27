@@ -170,6 +170,15 @@ void Game::drawBoard()
 
             window.draw(square);
 
+            // Highlight selected square (if any)
+            if (hasSelection && row == selectedRow && col == selectedColumn)
+            {
+                sf::RectangleShape highlight(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
+                highlight.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
+                highlight.setFillColor(sf::Color(255, 255, 0, 90)); // soft yellow overlay
+                window.draw(highlight);
+            }
+
             // Draw piece if present
             chess::Square boardSquare = board.getSquare(row, col);
             if (boardSquare.piece != chess::Piece::EMPTY && hasTexture)
