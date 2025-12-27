@@ -172,11 +172,11 @@ void Game::drawBoard()
             // Alternating colors: light and dark
             if ((row + col) % 2 == 0)
             {
-                square.setFillColor(sf::Color(217, 193, 159));
+                square.setFillColor(LIGHT_SQUARE);
             }
             else
             {
-                square.setFillColor(sf::Color(121, 60, 42));
+                square.setFillColor(DARK_SQUARE);
             }
 
             window.draw(square);
@@ -186,7 +186,7 @@ void Game::drawBoard()
             {
                 sf::RectangleShape highlight(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
                 highlight.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
-                highlight.setFillColor(sf::Color(255, 255, 0, 90)); // soft yellow overlay
+                highlight.setFillColor(sf::Color(255, 255, 0, SELECTION_HIGHLIGHT_ALPHA)); // soft yellow overlay
                 window.draw(highlight);
             }
 
