@@ -66,25 +66,36 @@ void Game::handleBoardClick(int row, int col)
               << " piece=" << (int)initialSquare.piece
               << " color=" << (int)initialSquare.color
               << " isEmpty=" << (initialSquare.piece == chess::Piece::EMPTY) << std::endl;
-    if (hasSelection && (row != selectedRow || col != selectedColumn))
-    {
-        if (selectedSquare.piece != chess::Piece::EMPTY && initialSquare.color != turn)
-        {
-            board.setSquare(row, col, selectedSquare);
-            board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
-            hasSelection = false;
-            if (turn == chess::Color::WHITE)
-            {
-                turn = chess::Color::BLACK;
-            }
-            else
-                turn = chess::Color::WHITE;
-        }
-        hasSelection = false;
-    }
-    else
 
+    // Case 1: already selected something
+    if (hasSelection)
+    {
+        // Click on the same square: deselect
+        if (row == selectedRow && col == selectedColumn)
+        {
+            hasSelection = false;
+            return;
+        }
+
+        // Click on your own piece: change selection to that piece
         if (initialSquare.piece != chess::Piece::EMPTY && initialSquare.color == turn)
+        {
+            selectedRow = row;
+            selectedColumn = col;
+            selectedSquare = initialSquare;
+            return;
+        }
+
+        // Move to empty square or opponent piece
+        board.setSquare(row, col, selectedSquare);
+        board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
+        hasSelection = false;
+        turn = (turn == chess::Color::WHITE) ? chess::Color::BLACK : chess::Color::WHITE;
+        return;
+    }
+
+    // Case 2: no selection yet, select if it's your turn
+    if (initialSquare.piece != chess::Piece::EMPTY && initialSquare.color == turn)
     {
         hasSelection = true;
         selectedColumn = col;
