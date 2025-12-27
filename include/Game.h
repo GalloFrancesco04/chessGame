@@ -1,6 +1,4 @@
-#ifndef GAME_H
-#define GAME_H
-
+#pragma once
 #include <SFML/Graphics.hpp>
 #include "Board.h"
 
@@ -55,5 +53,3 @@ private:
     static constexpr int PIECE_SIZE = 60; // Spritesheet is 360x120 (6 cols x 2 rows of 60x60)
     static constexpr int SELECTION_HIGHLIGHT_ALPHA = 90;
 };
-
-#endif // GAME_H
