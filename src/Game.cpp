@@ -61,15 +61,14 @@ void Game::run()
 
 void Game::handleBoardClick(int row, int col)
 {
-    chess::Square test = board.getSquare(row, col);
+    chess::Square initialSquare = board.getSquare(row, col);
     std::cout << "Clicked: row=" << row << " col=" << col
-              << " piece=" << (int)test.piece
-              << " color=" << (int)test.color
-              << " isEmpty=" << (test.piece == chess::Piece::EMPTY) << std::endl;
-
+              << " piece=" << (int)initialSquare.piece
+              << " color=" << (int)initialSquare.color
+              << " isEmpty=" << (initialSquare.piece == chess::Piece::EMPTY) << std::endl;
     if (hasSelection && (row != selectedRow || col != selectedColumn))
     {
-        if (selectedSquare.piece != chess::Piece::EMPTY && test.color != turn)
+        if (selectedSquare.piece != chess::Piece::EMPTY && initialSquare.color != turn)
         {
             board.setSquare(row, col, selectedSquare);
             board.setSquare(selectedRow, selectedColumn, chess::emptySquare);
@@ -85,12 +84,12 @@ void Game::handleBoardClick(int row, int col)
     }
     else
 
-        if (test.piece != chess::Piece::EMPTY && test.color == turn)
+        if (initialSquare.piece != chess::Piece::EMPTY && initialSquare.color == turn)
     {
         hasSelection = true;
         selectedColumn = col;
         selectedRow = row;
-        selectedSquare = test;
+        selectedSquare = initialSquare;
     }
 }
 
