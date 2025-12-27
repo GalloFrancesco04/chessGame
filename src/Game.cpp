@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "moveValidator.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -79,12 +80,6 @@ void Game::handleBoardClick(int row, int col)
     // Case 1: already selected something
     if (hasSelection)
     {
-        // Click on the same square: deselect
-        if (row == selectedPos.row && col == selectedPos.col)
-        {
-            hasSelection = false;
-            return;
-        }
 
         // Click on your own piece: change selection to that piece
         if (initialSquare.piece != chess::Piece::EMPTY && initialSquare.color == turn)
@@ -92,6 +87,12 @@ void Game::handleBoardClick(int row, int col)
             selectedPos.row = row;
             selectedPos.col = col;
             selectedSquare = initialSquare;
+            return;
+        }
+
+        if (!moveValidator::isValidMove(board, selectedPos.row, selectedPos.col, row, col))
+        {
+            hasSelection = false;
             return;
         }
 
