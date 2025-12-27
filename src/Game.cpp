@@ -4,6 +4,15 @@
 #include <map>
 #include <iostream>
 
+// Map piece types to spritesheet column indices
+const std::map<chess::Piece, int> Game::pieceToColumn = {
+    {chess::Piece::QUEEN, 0},
+    {chess::Piece::KING, 1},
+    {chess::Piece::ROOK, 2},
+    {chess::Piece::KNIGHT, 3},
+    {chess::Piece::BISHOP, 4},
+    {chess::Piece::PAWN, 5}};
+
 Game::Game() : window(sf::VideoMode(BOARD_SIZE * SQUARE_SIZE, BOARD_SIZE * SQUARE_SIZE), "Chess Game")
 {
     window.setFramerateLimit(60);
@@ -152,15 +161,6 @@ void Game::render()
 
 void Game::drawBoard()
 {
-    // Map piece types to spritesheet column indices
-    const std::map<chess::Piece, int> pieceToColumn = {
-        {chess::Piece::QUEEN, 0},
-        {chess::Piece::KING, 1},
-        {chess::Piece::ROOK, 2},
-        {chess::Piece::KNIGHT, 3},
-        {chess::Piece::BISHOP, 4},
-        {chess::Piece::PAWN, 5}};
-
     for (int row = 0; row < BOARD_SIZE; row++)
     {
         for (int col = 0; col < BOARD_SIZE; col++)

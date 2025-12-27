@@ -19,6 +19,7 @@ private:
     void handleBoardClick(int row, int col);
 
     sf::RenderWindow window;
+    static const std::map<chess::Piece, int> pieceToColumn;
     sf::Font font;
     bool hasFont{false};
     sf::Texture piecesTexture;
