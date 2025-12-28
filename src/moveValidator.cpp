@@ -98,6 +98,9 @@ bool moveValidator::isValidMove(const Board &board, int fromRow, int fromCol, in
         if (fromCol == toCol && hasObstacle(board, fromRow, fromCol, toRow, toCol))
             return false;
 
+        if (fromCol == toCol && toSquare.piece != chess::Piece::EMPTY)
+            return false;
+
         if (fromCol != toCol)
         {
             if (std::abs(toCol - fromCol) != 1)
