@@ -85,22 +85,28 @@ bool moveValidator::isValidMove(const Board &board, int fromRow, int fromCol, in
     switch (fromSquare.piece)
     {
     case chess::Piece::PAWN:
+        // Check direction
         if ((fromSquare.color == chess::Color::BLACK && fromRow > toRow) ||
             (fromSquare.color == chess::Color::WHITE && fromRow < toRow))
             return false;
 
+        // Check single move
         if (fromRow > 1 && fromRow < 6 && std::abs(toRow - fromRow) == 2)
             return false;
 
+        // Check double move
         if ((fromRow == 1 || fromRow == 6) && std::abs(toRow - fromRow) > 2)
             return false;
 
+        // Check obstacle
         if (fromCol == toCol && hasObstacle(board, fromRow, fromCol, toRow, toCol))
             return false;
 
+        // Check piece in front
         if (fromCol == toCol && toSquare.piece != chess::Piece::EMPTY)
             return false;
 
+        // Check Diagonal
         if (fromCol != toCol)
         {
             if (std::abs(toCol - fromCol) != 1)
