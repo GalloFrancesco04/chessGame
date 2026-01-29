@@ -34,3 +34,23 @@ if(EXISTS ${ASSETS_DIR})
 else()
     message(STATUS "No assets directory found at ${ASSETS_DIR}")
 endif()
+
+# Copy SFML DLLs to the executable directory (Windows only)
+if(WIN32)
+    add_custom_command(TARGET chess POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:sfml-graphics>
+            $<TARGET_FILE:sfml-window>
+            $<TARGET_FILE:sfml-system>
+            $<TARGET_FILE_DIR:chess>
+        COMMENT "Copying SFML DLLs to executable directory"
+    )
+    
+    # Copy assets to the executable directory
+    add_custom_command(TARGET chess POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_BINARY_DIR}/assets
+            $<TARGET_FILE_DIR:chess>/assets
+        COMMENT "Copying assets to executable directory"
+    )
+endif()
