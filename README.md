@@ -1,4 +1,4 @@
-# Chess Game (C++/SFML)
+# Chess Game (C++)
 
 This project is a didactic chess game developed in C++17 using the SFML graphics library. I created it as a personal exercise to practice object-oriented programming, modern C++ patterns, and to learn how to structure a medium-sized graphical application from scratch.
 
@@ -19,25 +19,41 @@ This project is a didactic chess game developed in C++17 using the SFML graphics
 
 ## Build & Run
 
-1. **Dependencies:**
+### Prerequisites
 
-   - C++17 compiler (tested with GCC)
-   - CMake ≥ 3.10
-   - Internet connection (for automatic SFML download)
+- C++17 compatible compiler (MSVC, GCC, or Clang)
+- CMake ≥ 3.10
+- Internet connection (SFML is downloaded automatically)
 
-2. **Build:**
+### Windows
 
-   ```sh
-   mkdir build
-   cd build
-   cmake ..
-   make
-   ```
+```powershell
+# Configure the project
+mkdir build
+cd build
+cmake ..
 
-3. **Run:**
-   ```sh
-   ./chess
-   ```
+# Build in Release mode
+cmake --build . --config Release
+
+# Run the game
+.\Release\chess.exe
+```
+
+### Linux / macOS
+
+```bash
+# Configure and build
+mkdir build
+cd build
+cmake ..
+make
+
+# Run the game
+./chess
+```
+
+**Note:** CMake automatically handles SFML download, DLL copying (Windows), and asset deployment.
 
 ## How It Works
 
@@ -59,7 +75,7 @@ This project is a didactic chess game developed in C++17 using the SFML graphics
 **TODO:**
 
 - Add: castling, en passant, promotion, check/checkmate detection
-- Improve UI/UX (move hints, animations, score)
+- Improve UI/UX (move hints, animations, score, resolution)
 - Add AI or multiplayer
 
 ## License
