@@ -22,6 +22,7 @@ private:
     void drawCoordinates();
     void handleBoardClick(int row, int col);
     bool kingCheck(const Board &board, chess::Color kingColor);
+    bool findKingPosition(const Board &board, chess::Color kingColor, Position &outPos) const;
 
     // SFML Resources
     sf::RenderWindow window;
@@ -44,11 +45,16 @@ private:
     Position lastMoveFrom;
     Position lastMoveTo;
 
+    // Check State
+    bool hasCheckHighlight = false;
+    Position checkKingPos;
+
     // Constants
     static const std::map<chess::Piece, int> pieceToColumn;
     const sf::Color LIGHT_SQUARE{217, 193, 159};
     const sf::Color DARK_SQUARE{121, 60, 42};
     const sf::Color LAST_MOVE_HIGHLIGHT{170, 200, 60};
+    const sf::Color CHECK_HIGHLIGHT{200, 60, 60};
     static constexpr int BOARD_SIZE = 8;
     static constexpr int SQUARE_SIZE = 80;
     static constexpr int PIECE_SIZE = 60; // Spritesheet is 360x120 (6 cols x 2 rows of 60x60)

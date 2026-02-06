@@ -71,28 +71,9 @@ void Game::run()
 
 bool Game::kingCheck(const Board &board, chess::Color kingColor)
 {
-    int kingRow;
-    int kingCol;
-    bool found = false;
-
-    int pieceRow;
-    int pieceCol;
-
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-        for (int j = 0; j < BOARD_SIZE; j++)
-        {
-            if (board.getSquare(i, j).color == kingColor && board.getSquare(i, j).piece == chess::Piece::KING)
-            {
-                kingRow = i;
-                kingCol = j;
-                found = true;
-                break;
-            }
-        }
-        if (found == true)
-            break;
-    }
+    Position kingPos;
+    if (!findKingPosition(board, kingColor, kingPos))
+        return false;
 
     for (int i = 0; i < BOARD_SIZE; i++)
     {
@@ -100,12 +81,30 @@ bool Game::kingCheck(const Board &board, chess::Color kingColor)
         {
             if (board.getSquare(i, j).piece != chess::Piece::EMPTY && board.getSquare(i, j).color != kingColor)
             {
-                if (moveValidator::isValidMove(board, i, j, kingRow, kingCol))
+                if (moveValidator::isValidMove(board, i, j, kingPos.row, kingPos.col))
                     return true;
             }
         }
     }
 
+    return false;
+}
+
+bool Game::findKingPosition(const Board &board, chess::Color kingColor, Position &outPos) const
+{
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        for (int j = 0; j < BOARD_SIZE; j++)
+        {
+            chess::Square square = board.getSquare(i, j);
+            if (square.color == kingColor && square.piece == chess::Piece::KING)
+            {
+                outPos.row = i;
+                outPos.col = j;
+                return true;
+            }
+        }
+    }
     return false;
 }
 
@@ -162,7 +161,11 @@ void Game::handleBoardClick(int row, int col)
 
         hasSelection = false;
         turn = (turn == chess::Color::WHITE) ? chess::Color::BLACK : chess::Color::WHITE;
-        kingCheck(board, turn);
+        hasCheckHighlight = kingCheck(board, turn);
+        if (hasCheckHighlight)
+        {
+            findKingPosition(board, turn, checkKingPos);
+        }
         return;
     }
 
@@ -264,6 +267,15 @@ void Game::drawBoard()
                 highlight.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
                 highlight.setFillColor(sf::Color(255, 255, 0, SELECTION_HIGHLIGHT_ALPHA)); // soft yellow overlay
                 window.draw(highlight);
+            }
+
+            // Highlight king in check
+            if (hasCheckHighlight && row == checkKingPos.row && col == checkKingPos.col)
+            {
+                sf::RectangleShape checkHighlight(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
+                checkHighlight.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
+                checkHighlight.setFillColor(sf::Color(CHECK_HIGHLIGHT.r, CHECK_HIGHLIGHT.g, CHECK_HIGHLIGHT.b, SELECTION_HIGHLIGHT_ALPHA));
+                window.draw(checkHighlight);
             }
 
             // Draw piece if present
