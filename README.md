@@ -74,7 +74,7 @@ make
 
 **TODO:**
 
-- Add: castling, en passant, promotion, check/checkmate detection
+- Add: castling, en passant, promotion
 - Improve UI/UX (move hints, animations, score, resolution)
 - Add AI or multiplayer
 
