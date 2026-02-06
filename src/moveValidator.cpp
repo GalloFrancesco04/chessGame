@@ -90,38 +90,38 @@ bool moveValidator::isValidMove(const Board &board, int fromRow, int fromCol, in
             (fromSquare.color == chess::Color::WHITE && fromRow < toRow))
             return false;
 
-        // Check single move
-        if (fromRow > 1 && fromRow < 6 && std::abs(toRow - fromRow) == 2)
-            return false;
-
-        // Check double move
-        if ((fromRow == 1 || fromRow == 6) && std::abs(toRow - fromRow) > 2)
-            return false;
-
-        // Check obstacle
-        if (fromCol == toCol && hasObstacle(board, fromRow, fromCol, toRow, toCol))
-            return false;
-
-        // Check piece in front
-        if (fromCol == toCol && toSquare.piece != chess::Piece::EMPTY)
-            return false;
-
-        // Check Diagonal
-        if (fromCol != toCol)
         {
-            if (std::abs(toCol - fromCol) != 1)
-                return false;
+            int rowDelta = std::abs(toRow - fromRow);
+            int colDelta = std::abs(toCol - fromCol);
 
-            if (fromSquare.color == chess::Color::BLACK)
+            if (colDelta == 0)
             {
-                if (toSquare.piece == chess::Piece::EMPTY || toSquare.color != chess::Color::WHITE)
+                if (rowDelta == 0)
                     return false;
+                if (rowDelta == 2)
+                {
+                    if (!(fromRow == 1 || fromRow == 6))
+                        return false;
+                    if (hasObstacle(board, fromRow, fromCol, toRow, toCol))
+                        return false;
+                }
+                else if (rowDelta != 1)
+                    return false;
+
+                if (toSquare.piece != chess::Piece::EMPTY)
+                    return false;
+                break;
             }
-            if (fromSquare.color == chess::Color::WHITE)
+
+            if (colDelta == 1)
             {
-                if (toSquare.piece == chess::Piece::EMPTY || toSquare.color != chess::Color::BLACK)
+                if (rowDelta != 1)
                     return false;
+                if (toSquare.piece == chess::Piece::EMPTY || toSquare.color == fromSquare.color)
+                    return false;
+                break;
             }
+            return false;
         }
         break;
 
