@@ -69,6 +69,46 @@ void Game::run()
     }
 }
 
+bool Game::kingCheck(const Board &board, chess::Color kingColor)
+{
+    int kingRow;
+    int kingCol;
+    bool found = false;
+
+    int pieceRow;
+    int pieceCol;
+
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        for (int j = 0; j < BOARD_SIZE; j++)
+        {
+            if (board.getSquare(i, j).color == kingColor && board.getSquare(i, j).piece == chess::Piece::KING)
+            {
+                kingRow = i;
+                kingCol = j;
+                found = true;
+                break;
+            }
+        }
+        if (found == true)
+            break;
+    }
+
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        for (int j = 0; j < BOARD_SIZE; j++)
+        {
+            if (board.getSquare(i, j).piece != chess::Piece::EMPTY && board.getSquare(i, j).color != kingColor)
+            {
+                if (moveValidator::isValidMove(board, i, j, kingRow, kingCol))
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void Game::handleBoardClick(int row, int col)
 {
     chess::Square initialSquare = board.getSquare(row, col);
@@ -97,14 +137,32 @@ void Game::handleBoardClick(int row, int col)
         }
 
         // Move to empty square or opponent piece
+        chess::Square capturedSquare = board.getSquare(row, col);
+        Position prevLastMoveFrom = lastMoveFrom;
+        Position prevLastMoveTo = lastMoveTo;
+        bool prevHasLastMove = hasLastMove;
+
         lastMoveFrom = selectedPos;
         lastMoveTo = {row, col};
         hasLastMove = true;
 
         board.setSquare(row, col, selectedSquare);
         board.setSquare(selectedPos.row, selectedPos.col, chess::emptySquare);
+
+        if (kingCheck(board, turn))
+        {
+            board.setSquare(selectedPos.row, selectedPos.col, selectedSquare);
+            board.setSquare(row, col, capturedSquare);
+            lastMoveFrom = prevLastMoveFrom;
+            lastMoveTo = prevLastMoveTo;
+            hasLastMove = prevHasLastMove;
+            hasSelection = false;
+            return;
+        }
+
         hasSelection = false;
         turn = (turn == chess::Color::WHITE) ? chess::Color::BLACK : chess::Color::WHITE;
+        kingCheck(board, turn);
         return;
     }
 

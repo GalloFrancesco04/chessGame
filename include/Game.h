@@ -21,6 +21,7 @@ private:
     void drawBoard();
     void drawCoordinates();
     void handleBoardClick(int row, int col);
+    bool kingCheck(const Board &board, chess::Color kingColor);
 
     // SFML Resources
     sf::RenderWindow window;
