@@ -90,6 +90,40 @@ bool Game::kingCheck(const Board &board, chess::Color kingColor)
     return false;
 }
 
+bool Game::isCheckmate(const Board &board, chess::Color kingColor)
+{
+    if (!kingCheck(board, kingColor))
+        return false;
+
+    for (int fromRow = 0; fromRow < BOARD_SIZE; fromRow++)
+    {
+        for (int fromCol = 0; fromCol < BOARD_SIZE; fromCol++)
+        {
+            chess::Square fromSquare = board.getSquare(fromRow, fromCol);
+            if (fromSquare.piece == chess::Piece::EMPTY || fromSquare.color != kingColor)
+                continue;
+
+            for (int toRow = 0; toRow < BOARD_SIZE; toRow++)
+            {
+                for (int toCol = 0; toCol < BOARD_SIZE; toCol++)
+                {
+                    if (!moveValidator::isValidMove(board, fromRow, fromCol, toRow, toCol))
+                        continue;
+
+                    Board tempBoard = board;
+                    tempBoard.setSquare(toRow, toCol, fromSquare);
+                    tempBoard.setSquare(fromRow, fromCol, chess::emptySquare);
+
+                    if (!kingCheck(tempBoard, kingColor))
+                        return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
 bool Game::findKingPosition(const Board &board, chess::Color kingColor, Position &outPos) const
 {
     for (int i = 0; i < BOARD_SIZE; i++)
@@ -165,6 +199,10 @@ void Game::handleBoardClick(int row, int col)
         if (hasCheckHighlight)
         {
             findKingPosition(board, turn, checkKingPos);
+            if (isCheckmate(board, turn))
+            {
+                std::cout << "Checkmate!" << std::endl;
+            }
         }
         return;
     }

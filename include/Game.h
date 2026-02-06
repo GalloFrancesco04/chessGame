@@ -22,6 +22,7 @@ private:
     void drawCoordinates();
     void handleBoardClick(int row, int col);
     bool kingCheck(const Board &board, chess::Color kingColor);
+    bool isCheckmate(const Board &board, chess::Color kingColor);
     bool findKingPosition(const Board &board, chess::Color kingColor, Position &outPos) const;
 
     // SFML Resources
