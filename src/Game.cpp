@@ -18,45 +18,12 @@ Game::Game() : window(sf::VideoMode(BOARD_SIZE * SQUARE_SIZE, BOARD_SIZE * SQUAR
 {
     window.setFramerateLimit(60);
 
-    // Try loading a commonly available font; fall back to assets if provided
-    const std::vector<std::string> candidates = {
-        // Project-local fonts (actual files)
-        "assets/fonts/NotoSans-VariableFont_wdth,wght.ttf",
-        "assets/fonts/NotoSans-Italic-VariableFont_wdth,wght.ttf",
-        "../assets/fonts/NotoSans-VariableFont_wdth,wght.ttf",
-        "../assets/fonts/NotoSans-Italic-VariableFont_wdth,wght.ttf",
-        // Alternative project-local names
-        "assets/fonts/DejaVuSans.ttf",
-        "assets/fonts/NotoSans-Regular.ttf",
-        "../assets/fonts/DejaVuSans.ttf",
-        "../assets/fonts/NotoSans-Regular.ttf",
-        // Common system paths (Arch/others)
-        "/usr/share/fonts/noto/NotoSans-Regular.ttf",
-        "/usr/share/fonts/TTF/DejaVuSans.ttf",
-        "/usr/share/fonts/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/TTF/LiberationSans-Regular.ttf"};
-    for (const auto &p : candidates)
-    {
-        if (font.loadFromFile(p))
-        {
-            hasFont = true;
-            break;
-        }
-    }
+    // Load font and pieces spritesheet from project assets
+    if (font.loadFromFile("assets/fonts/NotoSans-VariableFont_wdth,wght.ttf"))
+        hasFont = true;
 
-    // Load pieces spritesheet
-    const std::vector<std::string> spritesheet_candidates = {
-        "assets/icons/pieces.png",
-        "../assets/icons/pieces.png",
-        "../../assets/icons/pieces.png"};
-    for (const auto &p : spritesheet_candidates)
-    {
-        if (piecesTexture.loadFromFile(p))
-        {
-            hasTexture = true;
-            break;
-        }
-    }
+    if (piecesTexture.loadFromFile("assets/icons/pieces.png"))
+        hasTexture = true;
 }
 
 void Game::run()
