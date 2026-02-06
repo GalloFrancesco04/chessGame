@@ -82,6 +82,9 @@ bool moveValidator::isValidMove(const Board &board, int fromRow, int fromCol, in
     if (fromSquare.color == toSquare.color && fromSquare.color != chess::Color::NONE)
         return false;
 
+    int rowDelta = std::abs(toRow - fromRow);
+    int colDelta = std::abs(toCol - fromCol);
+
     switch (fromSquare.piece)
     {
     case chess::Piece::PAWN:
@@ -89,11 +92,7 @@ bool moveValidator::isValidMove(const Board &board, int fromRow, int fromCol, in
         if ((fromSquare.color == chess::Color::BLACK && fromRow > toRow) ||
             (fromSquare.color == chess::Color::WHITE && fromRow < toRow))
             return false;
-
         {
-            int rowDelta = std::abs(toRow - fromRow);
-            int colDelta = std::abs(toCol - fromCol);
-
             if (colDelta == 0)
             {
                 if (rowDelta == 0)
@@ -126,13 +125,13 @@ bool moveValidator::isValidMove(const Board &board, int fromRow, int fromCol, in
         break;
 
     case chess::Piece::KNIGHT:
-        if (!((std::abs(toRow - fromRow) == 2 && std::abs(toCol - fromCol) == 1) ||
-              (std::abs(toRow - fromRow) == 1 && std::abs(toCol - fromCol) == 2)))
+        if (!((rowDelta == 2 && colDelta == 1) ||
+              (rowDelta == 1 && colDelta == 2)))
             return false;
         break;
 
     case chess::Piece::BISHOP:
-        if (!(std::abs(toRow - fromRow) == std::abs(toCol - fromCol)))
+        if (!(rowDelta == colDelta))
             return false;
         if (hasObstacle(board, fromRow, fromCol, toRow, toCol))
             return false;
@@ -146,14 +145,14 @@ bool moveValidator::isValidMove(const Board &board, int fromRow, int fromCol, in
         break;
 
     case chess::Piece::QUEEN:
-        if (!(fromRow == toRow || fromCol == toCol || std::abs(toRow - fromRow) == std::abs(toCol - fromCol)))
+        if (!(fromRow == toRow || fromCol == toCol || rowDelta == colDelta))
             return false;
         if (hasObstacle(board, fromRow, fromCol, toRow, toCol))
             return false;
         break;
 
     case chess::Piece::KING:
-        if (std::abs(toRow - fromRow) > 1 || std::abs(toCol - fromCol) > 1)
+        if (rowDelta > 1 || colDelta > 1)
             return false;
         if (hasObstacle(board, fromRow, fromCol, toRow, toCol))
             return false;
